@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Configuración responsive optimizada para dispositivos móviles sin zoom accidental al tocar rápido -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#050609">
+    <title>☕ POO Quest: Clase, Objeto, Atributo o Método — Juego Java</title>
+
+    <!-- =========================================================================
+         ESTILOS CSS (ESTILO BLACK / DARK CYBERPUNK + MOBILE FIRST + FUENTES DINÁMICAS)
+         ========================================================================= -->
+    <style>
+        /* Variables globales de diseño oscuro ("Black Style") y escalado de fuente */
+        :root {
+            --bg-pure-black: #050609;
+            --bg-card: #0e1118;
+            --bg-card-elevated: #151a25;
+            --bg-code: #080a0f;
+            --border-subtle: #22293a;
+            --border-glow: #33415c;
+
+            /* Colores de texto */
+            --text-main: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Colores identificativos para los 4 pilares: Clase, Objeto, Atributo y Método */
+            --color-clase: #38bdf8;       /* Azul Cian Neón -> Molde / Plantilla */
+            --bg-clase: rgba(56, 189, 248, 0.14);
+
+            --color-objeto: #a855f7;      /* Morado Neón -> Instancia / Ejemplar Real */
+            --bg-objeto: rgba(168, 85, 247, 0.14);
+
+            --color-atributo: #f59e0b;    /* Ámbar Dorado -> Característica / Propiedad */
+            --bg-atributo: rgba(245, 158, 11, 0.14);
+
+            --color-metodo: #10b981;      /* Verde Esmeralda Neón -> Acción / Comportamiento () */
+            --bg-metodo: rgba(16, 185, 129, 0.14);
+
+            /* Colores de estado del juego */
+            --color-success: #22c55e;
+            --bg-success: rgba(34, 197, 94, 0.16);
+            --color-error: #ef4444;
+            --bg-error: rgba(239, 68, 68, 0.16);
+
+            /* Tamaño base de la fuente controlado dinámicamente por el usuario (A-, A, A+, A++) */
+            --base-font-size: 16px;
+        }
+
+        /* Reset general y configuración tipográfica */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: var(--base-font-size);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-pure-black);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* =========================================================================
+           BARRA SUPERIOR FIJA ( ACCESIBILIDAD DE FUENTE, SONIDO Y MARCADOR )
+           ========================================================================= */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 10, 15, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.6rem 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .brand-logo span.coffee {
+            font-size: 1.25rem;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--color-clase), var(--color-metodo));
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 0.1rem 0.4rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Controles de tamaño de letra y sonido */
+        .toolbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .font-selector {
+            display: flex;
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .font-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.38rem 0.55rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .font-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .font-btn.active {
+            background: var(--color-clase);
+            color: #000;
+        }
+
+        .icon-btn {
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--color-clase);
+        }
+
+        /* =========================================================================
+           HUD DE PUNTUACIÓN, RACHA Y PROGRESO (VISIBLE EN JUEGO)
+           ========================================================================= */
+        .hud-bar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.55rem 0.85rem;
+            display: none; /* Se activa al empezar partida */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem;
+            text-align: center;
+        }
+
+        .hud-bar.visible {
+            display: grid;
+        }
+
+        .hud-item {
+            background: var(--bg-code);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 0.3rem 0.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hud-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .hud-value {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .hud-value.score { color: var(--color-clase); }
+        .hud-value.streak { color: var(--color-atributo); }
+
+        /* Barra de progreso general de la fase */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: var(--bg-card-elevated);
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-container.visible {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--color-clase), var(--color-objeto), var(--color-atributo), var(--color-metodo));
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* =========================================================================
+           CONTENEDOR PRINCIPAL (ADAPTADO A MÓVIL Y ESCRITORIO)
+           ========================================================================= */
+        .main-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 1rem 0.9rem 3rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Sistema de pantallas */
+        .screen {
+            display: none;
+            flex-direction: column;
+            gap: 1.1rem;
+            animation: fadeIn 0.28s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================================
+           TARJETAS Y ELEMENTOS DE INTERFAZ
+           ========================================================================= */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-title {
+            font-size: 1.55rem;
+            font-weight: 900;
+            line-height: 1.22;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(90deg, #38bdf8, #c084fc, #fbbf24, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.93rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Tarjetas de Chuleta / Resumen Teórico Visual de los 4 Conceptos */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.7rem;
+        }
+
+        .concept-box {
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            border-left: 5px solid;
+            background: var(--bg-card-elevated);
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .concept-box.clase {
+            border-left-color: var(--color-clase);
+            background: linear-gradient(90deg, var(--bg-clase) 0%, var(--bg-card-elevated) 100%);
+        }
+
+        .concept-box.objeto {
+            border-left-color: var(--color-objeto);
+            background: linear-gradient(90deg, var(--bg-objeto) 0%, var(--bg-card-elevated) 100%);
+        }
+
+        .concept-box.atributo {
+            border-left-color: var(--color-atributo);
+            background: linear-gradient(90deg, var(--bg-atributo) 0%, var(--bg-card-elevated) 100%);
+        }
+
+        .concept-box.metodo {
+            border-left-color: var(--color-metodo);
+            background: linear-gradient(90deg, var(--bg-metodo) 0%, var(--bg-card-elevated) 100%);
+        }
+
+        .concept-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .concept-box.clase .concept-header { color: var(--color-clase); }
+        .concept-box.objeto .concept-header { color: var(--color-objeto); }
+        .concept-box.atributo .concept-header { color: var(--color-atributo); }
+        .concept-box.metodo .concept-header { color: var(--color-metodo); }
+
+        .concept-desc {
+            font-size: 0.88rem;
+            color: var(--text-main);
+        }
+
+        .concept-example {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 0.1rem;
+        }
+
+        /* =========================================================================
+           BOTONES DE ACCIÓN Y MODOS DE JUEGO
+           ========================================================================= */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            width: 100%;
+            border: none;
+            border-radius: 13px;
+            padding: 0.95rem 1.1rem;
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: transform 0.12s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+        }
+
+        .btn-primary:active, .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-clase);
+        }
+
+        /* =========================================================================
+           FASE 1: LAS 21 PREGUNTAS DE LA VIDA REAL (4 OPCIONES)
+           ========================================================================= */
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-glow);
+            color: var(--color-clase);
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            align-self: flex-start;
+        }
+
+        .question-counter {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .real-world-showcase {
+            background: var(--bg-code);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            margin: 0.55rem 0;
+            position: relative;
+        }
+
+        .showcase-emoji {
+            font-size: 2.8rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            display: block;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+        }
+
+        .showcase-category {
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .showcase-question {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.35;
+        }
+
+        /* Botones táctiles para responder Clase, Objeto, Atributo o Método */
+        .answer-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            margin-top: 0.35rem;
+        }
+
+        .option-btn {
+            background: var(--bg-card-elevated);
+            border: 2px solid var(--border-subtle);
+            border-radius: 13px;
+            padding: 0.8rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.15s ease;
+            text-align: left;
+        }
+
+        .option-btn .opt-left {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .option-btn .opt-icon {
+            font-size: 1.35rem;
+            width: 2.2rem;
+            height: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .option-btn .opt-hint {
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        /* Bordes temáticos al pasar o enfocar */
+        .option-btn.opt-clase:hover { border-color: var(--color-clase); background: var(--bg-clase); }
+        .option-btn.opt-objeto:hover { border-color: var(--color-objeto); background: var(--bg-objeto); }
+        .option-btn.opt-atributo:hover { border-color: var(--color-atributo); background: var(--bg-atributo); }
+        .option-btn.opt-metodo:hover { border-color: var(--color-metodo); background: var(--bg-metodo); }
+
+        /* Estados tras responder */
+        .option-btn.correct {
+            border-color: var(--color-success) !important;
+            background: var(--bg-success) !important;
+            color: #fff;
+            transform: scale(1.01);
+        }
+
+        .option-btn.wrong {
+            border-color: var(--color-error) !important;
+            background: var(--bg-error) !important;
+            opacity: 0.85;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        /* Caja de retroalimentación pedagógica tras responder */
+        .feedback-box {
+            display: none;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            border: 1px solid;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .feedback-box.visible {
+            display: block;
+        }
+
+        .feedback-box.ok {
+            background: var(--bg-success);
+            border-color: var(--color-success);
+        }
+
+        .feedback-box.fail {
+            background: var(--bg-error);
+            border-color: var(--color-error);
+        }
+
+        .feedback-title {
+            font-weight: 900;
+            font-size: 1.02rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .feedback-text {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            margin-bottom: 0.85rem;
+        }
+
+        /* =========================================================================
+           FASE 2: CAZADOR DE CÓDIGO JAVA (MARCAR CLASE, ATRIBUTO, MÉTODO Y OBJETO)
+           ========================================================================= */
+        .mission-banner {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+            border: 2px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 0.85rem 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        .mission-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.35rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .step-pill {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 0.35rem 0.2rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-code);
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .step-pill.active-clase {
+            border-color: var(--color-clase);
+            background: var(--bg-clase);
+            color: var(--color-clase);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+        }
+
+        .step-pill.active-atributo {
+            border-color: var(--color-atributo);
+            background: var(--bg-atributo);
+            color: var(--color-atributo);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+        }
+
+        .step-pill.active-metodo {
+            border-color: var(--color-metodo);
+            background: var(--bg-metodo);
+            color: var(--color-metodo);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .step-pill.active-objeto {
+            border-color: var(--color-objeto);
+            background: var(--bg-objeto);
+            color: var(--color-objeto);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+        }
+
+        .step-pill.completed {
+            border-color: var(--color-success);
+            background: var(--bg-success);
+            color: var(--color-success);
+        }
+
+        .mission-instruction {
+            font-size: 1rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        /* Editor de Código Interactivo estilo IDE Oscuro */
+        .code-window {
+            background: var(--bg-code);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .code-header {
+            background: #111520;
+            padding: 0.5rem 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #f59e0b; }
+        .dot.green { background: #10b981; }
+
+        .code-body {
+            padding: 1rem 0.75rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 2.05;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Palabras reservadas de sintaxis Java */
+        .kw { color: #f472b6; font-weight: 700; } /* public, class, void, new, static */
+        .cm { color: #64748b; font-style: italic; } /* comentarios */
+
+        /* Tokens interactivos tocables en el móvil */
+        .code-token {
+            display: inline-block;
+            padding: 0.08rem 0.45rem;
+            margin: 0.08rem 0.08rem;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1.5px dashed #475569;
+            color: #e2e8f0;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .code-token:hover, .code-token:active {
+            border-color: #94a3b8;
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
+        }
+
+        /* Etiquetas marcadas correctamente en el código para cada uno de los 4 conceptos */
+        .code-token.marked-clase {
+            background: var(--bg-clase);
+            border: 2px solid var(--color-clase);
+            color: var(--color-clase);
+            cursor: default;
+        }
+
+        .code-token.marked-atributo {
+            background: var(--bg-atributo);
+            border: 2px solid var(--color-atributo);
+            color: var(--color-atributo);
+            cursor: default;
+        }
+
+        .code-token.marked-metodo {
+            background: var(--bg-metodo);
+            border: 2px solid var(--color-metodo);
+            color: var(--color-metodo);
+            cursor: default;
+        }
+
+        .code-token.marked-objeto {
+            background: var(--bg-objeto);
+            border: 2px solid var(--color-objeto);
+            color: var(--color-objeto);
+            cursor: default;
+        }
+
+        .code-token.wrong-flash {
+            background: var(--bg-error);
+            border: 2px solid var(--color-error);
+            color: var(--color-error);
+            animation: shake 0.35s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .token-badge {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            padding: 0.05rem 0.3rem;
+            border-radius: 4px;
+            margin-left: 0.25rem;
+            vertical-align: middle;
+            font-family: system-ui, sans-serif;
+            font-weight: 900;
+        }
+
+        /* =========================================================================
+           PANTALLA FINAL DE RESULTADOS Y MEDALLAS
+           ========================================================================= */
+        .results-summary {
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        .medal-icon {
+            font-size: 4.2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1.1rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 0.85rem;
+            text-align: center;
+        }
+
+        .stat-big {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-clase);
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        /* Pie de página discreto */
+        .footer-note {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =========================================================================
+         BARRA DE NAVEGACIÓN SUPERIOR: LOGO + SELECTOR DE TAMAÑO DE FUENTE + AUDIO
+         ========================================================================= -->
+    <header class="top-navbar">
+        <div class="brand-logo" onclick="goHome()" title="Volver al inicio">
+            <span class="coffee">☕</span>
+            <span>POO Quest</span>
+            <span class="brand-badge">Java 4x4</span>
+        </div>
+
+        <div class="toolbar-controls">
+            <!-- Selector dinámico de tamaño de fuente (A-, A, A+, A++) -->
+            <div class="font-selector" role="group" aria-label="Tamaño de fuente">
+                <button class="font-btn" onclick="setFontSize(14, this)" title="Letra pequeña">A-</button>
+                <button class="font-btn active" onclick="setFontSize(16, this)" title="Letra normal">A</button>
+                <button class="font-btn" onclick="setFontSize(18.5, this)" title="Letra grande">A+</button>
+                <button class="font-btn" onclick="setFontSize(21, this)" title="Letra extra grande">A++</button>
+            </div>
+
+            <!-- Botón para activar o silenciar los efectos de sonido -->
+            <button id="soundToggleBtn" class="icon-btn" onclick="toggleSound()" title="Sonido Sí/No">
+                🔊
+            </button>
+        </div>
+    </header>
+
+    <!-- =========================================================================
+         MARCADOR (HUD) DE PUNTUACIÓN, RACHA Y PROGRESO
+         ========================================================================= -->
+    <section id="hudBar" class="hud-bar">
+        <div class="hud-item">
+            <span class="hud-label">Puntos</span>
+            <span id="hudScore" class="hud-value score">0</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Racha</span>
+            <span id="hudStreak" class="hud-value streak">🔥 0</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Aciertos</span>
+            <span id="hudHits" class="hud-value">0</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Modo</span>
+            <span id="hudPhase" class="hud-value">Parte 1</span>
+        </div>
+    </section>
+
+    <div id="progressContainer" class="progress-container">
+        <div id="progressFill" class="progress-fill"></div>
+    </div>
+
+    <!-- =========================================================================
+         CONTENEDOR PRINCIPAL DE PANTALLAS
+         ========================================================================= -->
+    <main class="main-container">
+
+        <!-- ---------------------------------------------------------------------
+             PANTALLA 1: INICIO Y CHULETA RÁPIDA DE LOS 4 CONCEPTOS (CLASE, OBJETO, ATRIBUTO, MÉTODO)
+             --------------------------------------------------------------------- -->
+        <section id="screenHome" class="screen active">
+            <div class="card">
+                <h1 class="hero-title">¿Clase, Objeto, Atributo o Método?</h1>
+                <p class="hero-subtitle">
+                    Aprende a diferenciar los <strong>4 conceptos clave</strong> de la Programación Orientada a Objetos en Java desde tu móvil.
+                </p>
+
+                <!-- Guía visual de los 4 pilares con colores diferenciados -->
+                <div class="concept-grid">
+                    <div class="concept-box clase">
+                        <div class="concept-header">
+                            <span>📐 1. CLASE (El Molde General)</span>
+                            <span>class</span>
+                        </div>
+                        <p class="concept-desc">
+                            Es el plano, plantilla o categoría general que define cómo serán los objetos de ese tipo.
+                        </p>
+                        <p class="concept-example">
+                            Ejemplos: «Perro», «Coche», «Smartphone», «CuentaBancaria».
+                        </p>
+                    </div>
+
+                    <div class="concept-box objeto">
+                        <div class="concept-header">
+                            <span>🧸 2. OBJETO (El Ejemplar Concreto)</span>
+                            <span>new</span>
+                        </div>
+                        <p class="concept-desc">
+                            Es un individuo único y concreto creado a partir de la clase (tiene nombre propio o identidad).
+                        </p>
+                        <p class="concept-example">
+                            Ejemplos: «Mi perro Toby», «El Seat Ibiza matrícula 4589-KLM», «La alumna Laura».
+                        </p>
+                    </div>
+
+                    <div class="concept-box atributo">
+                        <div class="concept-header">
+                            <span>🏷️ 3. ATRIBUTO (La Característica / Dato)</span>
+                            <span>variable</span>
+                        </div>
+                        <p class="concept-desc">
+                            Es una cualidad, propiedad o dato que describe el estado del objeto.
+                        </p>
+                        <p class="concept-example">
+                            Ejemplos: «El color del perro», «La velocidad máxima», «El saldo actual».
+                        </p>
+                    </div>
+
+                    <div class="concept-box metodo">
+                        <div class="concept-header">
+                            <span>⚡ 4. MÉTODO (La Acción / Comportamiento)</span>
+                            <span>accion()</span>
+                        </div>
+                        <p class="concept-desc">
+                            Es un verbo o acción que el objeto sabe realizar. En Java siempre lleva paréntesis <code>()</code>.
+                        </p>
+                        <p class="concept-example">
+                            Ejemplos: «Ladrar y correr», «Acelerar y frenar», «Enviar un mensaje».
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones para iniciar el juego completo o practicar cada parte por separado -->
+            <div class="card">
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="startFullAdventure()">
+                        🚀 Jugar Reto Completo (Parte 1 + Parte 2)
+                    </button>
+                    <button class="btn-secondary" onclick="startPhase1Only()">
+                        🌍 Solo Parte 1: 21 Preguntas de la Realidad
+                    </button>
+                    <button class="btn-secondary" onclick="startPhase2Only()">
+                        💻 Solo Parte 2: Marcar los 4 en Código Java
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------------
+             PANTALLA 2: FASE 1 — 21 PREGUNTAS CON COMPARACIONES DE LA REALIDAD
+             --------------------------------------------------------------------- -->
+        <section id="screenPhase1" class="screen">
+            <div class="card">
+                <div class="question-counter">
+                    <span class="phase-badge">🌍 Parte 1: Vida Real</span>
+                    <span id="q1ProgressText">Pregunta 1 de 21</span>
+                </div>
+
+                <!-- Tarjeta central donde aparece el ejemplo de la vida real -->
+                <div class="real-world-showcase">
+                    <span id="q1Emoji" class="showcase-emoji">🐕</span>
+                    <span id="q1Category" class="showcase-category">Contexto: Animales</span>
+                    <p id="q1Text" class="showcase-question">
+                        ¿Qué es «El color de un perro»?
+                    </p>
+                </div>
+
+                <!-- Cuatro opciones claras: Clase, Objeto, Atributo o Método -->
+                <div class="answer-options">
+                    <button id="btnOptClase" class="option-btn opt-clase" onclick="submitPhase1Answer('CLASE')">
+                        <div class="opt-left">
+                            <span class="opt-icon">📐</span>
+                            <div>
+                                <span>Una CLASE</span>
+                                <span class="opt-hint">El molde o categoría general</span>
+                            </div>
+                        </div>
+                        <span>➔</span>
+                    </button>
+
+                    <button id="btnOptObjeto" class="option-btn opt-objeto" onclick="submitPhase1Answer('OBJETO')">
+                        <div class="opt-left">
+                            <span class="opt-icon">🧸</span>
+                            <div>
+                                <span>Un OBJETO</span>
+                                <span class="opt-hint">Un individuo o ejemplar concreto</span>
+                            </div>
+                        </div>
+                        <span>➔</span>
+                    </button>
+
+                    <button id="btnOptAtributo" class="option-btn opt-atributo" onclick="submitPhase1Answer('ATRIBUTO')">
+                        <div class="opt-left">
+                            <span class="opt-icon">🏷️</span>
+                            <div>
+                                <span>Un ATRIBUTO</span>
+                                <span class="opt-hint">Una característica, cualidad o dato</span>
+                            </div>
+                        </div>
+                        <span>➔</span>
+                    </button>
+
+                    <button id="btnOptMetodo" class="option-btn opt-metodo" onclick="submitPhase1Answer('METODO')">
+                        <div class="opt-left">
+                            <span class="opt-icon">⚡</span>
+                            <div>
+                                <span>Un MÉTODO</span>
+                                <span class="opt-hint">Una acción o comportamiento que realiza</span>
+                            </div>
+                        </div>
+                        <span>➔</span>
+                    </button>
+                </div>
+
+                <!-- Explicación inmediata tras pulsar una opción -->
+                <div id="q1Feedback" class="feedback-box">
+                    <div id="q1FeedbackTitle" class="feedback-title"></div>
+                    <p id="q1FeedbackText" class="feedback-text"></p>
+                    <button id="q1NextBtn" class="btn-primary" onclick="nextPhase1Question()">
+                        Siguiente pregunta ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------------
+             PANTALLA DE TRANSICIÓN ENTRE FASE 1 Y FASE 2
+             --------------------------------------------------------------------- -->
+        <section id="screenTransition" class="screen">
+            <div class="card results-summary">
+                <span class="medal-icon">🎉</span>
+                <h2 class="hero-title">¡Las 21 Preguntas Superadas!</h2>
+                <p class="hero-subtitle">
+                    Ya sabes distinguir Clase, Objeto, Atributo y Método en la vida real. Ahora toca cazarlos dentro del <strong>código fuente de Java</strong>.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div id="transScore" class="stat-big">0</div>
+                        <div class="stat-label">Puntos acumulados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="transAccuracy" class="stat-big">100%</div>
+                        <div class="stat-label">Aciertos en Parte 1</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="beginPhase2FromTransition()">
+                    💻 Pasar a la Parte 2: Código Java ➔
+                </button>
+            </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------------
+             PANTALLA 3: FASE 2 — MARCAR CLASE, ATRIBUTO, MÉTODO Y OBJETO EN JAVA
+             --------------------------------------------------------------------- -->
+        <section id="screenPhase2" class="screen">
+            <div class="card">
+                <div class="question-counter">
+                    <span class="phase-badge">💻 Parte 2: Código Java</span>
+                    <span id="q2ProgressText">Reto 1 de 8</span>
+                </div>
+
+                <!-- Panel que indica cuál de los 4 elementos debe tocar el alumno en este paso -->
+                <div class="mission-banner">
+                    <div class="mission-steps">
+                        <div id="stepPillClase" class="step-pill">1. CLASE</div>
+                        <div id="stepPillAtributo" class="step-pill">2. ATRIBUTO</div>
+                        <div id="stepPillMetodo" class="step-pill">3. MÉTODO</div>
+                        <div id="stepPillObjeto" class="step-pill">4. OBJETO</div>
+                    </div>
+                    <p id="missionPrompt" class="mission-instruction">
+                        👇 Toca en el código el nombre de la CLASE
+                    </p>
+                </div>
+
+                <!-- Ventana de código Java con elementos interactivos -->
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="window-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span id="codeFileName">Perro.java</span>
+                    </div>
+                    <div id="codeContainer" class="code-body">
+                        <!-- El código interactivo se inyecta dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Mensaje de ayuda / explicación cuando completa o falla un toque -->
+                <div id="q2Feedback" class="feedback-box">
+                    <div id="q2FeedbackTitle" class="feedback-title"></div>
+                    <p id="q2FeedbackText" class="feedback-text"></p>
+                    <button id="q2NextBtn" class="btn-primary" onclick="nextPhase2Challenge()">
+                        Siguiente código Java ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------------
+             PANTALLA 4: RESULTADOS FINALES Y TROFEO
+             --------------------------------------------------------------------- -->
+        <section id="screenResults" class="screen">
+            <div class="card results-summary">
+                <span id="finalMedal" class="medal-icon">🏆</span>
+                <h2 id="finalRankTitle" class="hero-title">¡Maestro de POO en Java!</h2>
+                <p id="finalRankDesc" class="hero-subtitle">
+                    Has completado el entrenamiento diferenciando Clases, Objetos, Atributos y Métodos.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div id="finalScore" class="stat-big">0</div>
+                        <div class="stat-label">Puntuación Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="finalBestStreak" class="stat-big">🔥 0</div>
+                        <div class="stat-label">Mejor Racha</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="finalHits" class="stat-big">0 / 0</div>
+                        <div class="stat-label">Aciertos a la primera</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="finalPercent" class="stat-big">100%</div>
+                        <div class="stat-label">Precisión Global</div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="startFullAdventure()">
+                        🔄 Jugar otra vez (Nuevo orden aleatorio)
+                    </button>
+                    <button class="btn-secondary" onclick="goHome()">
+                        🏠 Volver al menú principal
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer-note">
+        ☕ POO Quest Java — Clase, Objeto, Atributo y Método explicados de forma interactiva.
+    </footer>
+
+    <!-- =========================================================================
+         LÓGICA DEL JUEGO EN JAVASCRIPT (DOCUMENTADA PASO A PASO)
+         ========================================================================= -->
+    <script>
+        /* =========================================================================
+           1. BANCO DE 21 PREGUNTAS DE LA VIDA REAL (FASE 1 — 4 CONCEPTOS)
+           -------------------------------------------------------------------------
+           Contiene exactamente 21 preguntas repartidas entre los 4 conceptos:
+             - CLASE (El molde general)
+             - OBJETO (El individuo concreto)
+             - ATRIBUTO (La característica o propiedad, ej: "El color de un perro")
+             - MÉTODO (La acción o comportamiento, ej: "Ladrar", "Acelerar")
+           Se barajan siempre de forma aleatoria y sin repetirse.
+           ========================================================================= */
+        const REAL_WORLD_QUESTIONS = [
+            // --- Bloque Perros (Incluye el ejemplo exacto pedido por el usuario) ---
+            {
+                id: 1,
+                emoji: "🎨🐕",
+                category: "Mundo Animal",
+                question: "«El color de un perro» (por ejemplo: marrón, negro o blanco), ¿qué es en programación?",
+                answer: "ATRIBUTO",
+                explanation: "¡Exacto! El color, el peso o la edad son características que describen al perro, por tanto son ATRIBUTOS."
+            },
+            {
+                id: 2,
+                emoji: "🐕",
+                category: "Mundo Animal",
+                question: "El concepto o molde general de «Perro» que define cómo son todos los perros, ¿qué es?",
+                answer: "CLASE",
+                explanation: "¡Correcto! «Perro» en general no es un animal concreto ni una acción, sino la CLASE (la plantilla general)."
+            },
+            {
+                id: 3,
+                emoji: "🐶🦴",
+                category: "Mundo Animal",
+                question: "«Toby, el perro labrador de mi vecino que duerme en la alfombra», ¿qué es?",
+                answer: "OBJETO",
+                explanation: "¡Muy bien! Toby es un ejemplar real, único y concreto que existe en el mundo: es un OBJETO de la clase Perro."
+            },
+            {
+                id: 4,
+                emoji: "🔊🐕",
+                category: "Mundo Animal",
+                question: "La acción de «ladrar()» o «correrTrasLaPelota()» que realiza un perro, ¿qué es?",
+                answer: "METODO",
+                explanation: "¡Bravo! Ladrar y correr son acciones o comportamientos que el perro sabe hacer, es decir, son MÉTODOS."
+            },
+
+            // --- Bloque Automóviles ---
+            {
+                id: 5,
+                emoji: "🚗📐",
+                category: "Motor y Vehículos",
+                question: "Los planos de fábrica que definen cómo se construye un «Coche» en general, ¿qué representan?",
+                answer: "CLASE",
+                explanation: "¡Así es! El plano de fabricación o concepto general «Coche» es la CLASE."
+            },
+            {
+                id: 6,
+                emoji: "🚙💨",
+                category: "Motor y Vehículos",
+                question: "«El Seat Ibiza rojo con matrícula 4589-KLM aparcado frente a tu casa», ¿qué es?",
+                answer: "OBJETO",
+                explanation: "¡Exacto! Ese vehículo concreto con matrícula propia que puedes tocar es un OBJETO."
+            },
+            {
+                id: 7,
+                emoji: "⛽🔢",
+                category: "Motor y Vehículos",
+                question: "«El número de puertas y la velocidad máxima de un coche», ¿qué son?",
+                answer: "ATRIBUTO",
+                explanation: "¡Genial! El número de puertas, el color de la carrocería o los caballos son datos descriptivos: ATRIBUTOS."
+            },
+            {
+                id: 8,
+                emoji: "🛑🏎️",
+                category: "Motor y Vehículos",
+                question: "Las acciones de «acelerar()», «frenar()» o «girarVolante()» en un vehículo, ¿qué son?",
+                answer: "METODO",
+                explanation: "¡Perfecto! Acelerar, frenar y girar son verbos (acciones que ejecuta el coche): en Java son MÉTODOS."
+            },
+
+            // --- Bloque Teléfonos Móviles ---
+            {
+                id: 9,
+                emoji: "🔋📱",
+                category: "Tecnología",
+                question: "«El porcentaje de batería y las pulgadas de pantalla de un móvil», ¿qué son?",
+                answer: "ATRIBUTO",
+                explanation: "¡Correcto! El nivel de batería o el tamaño de pantalla son propiedades o datos del dispositivo: ATRIBUTOS."
+            },
+            {
+                id: 10,
+                emoji: "📱✋",
+                category: "Tecnología",
+                question: "«Este teléfono móvil exacto que tienes ahora mismo en tu mano», ¿qué es?",
+                answer: "OBJETO",
+                explanation: "¡Muy bien! Tu teléfono físico concreto es un ejemplar único en el mundo: es un OBJETO."
+            },
+            {
+                id: 11,
+                emoji: "📞💬",
+                category: "Tecnología",
+                question: "La función de «realizarLlamada()» o «hacerFoto()» con el teléfono móvil, ¿qué es?",
+                answer: "METODO",
+                explanation: "¡Exacto! Llamar o sacar una foto son acciones que realiza el teléfono, por tanto son MÉTODOS."
+            },
+            {
+                id: 12,
+                emoji: "📲📋",
+                category: "Tecnología",
+                question: "El esquema general «Smartphone» en el catálogo de diseño de la fábrica, ¿qué es?",
+                answer: "CLASE",
+                explanation: "¡Correcto! La definición genérica «Smartphone» sirve como molde para fabricar millones de teléfonos: es la CLASE."
+            },
+
+            // --- Bloque Universidad y Estudiantes ---
+            {
+                id: 13,
+                emoji: "🎓",
+                category: "Universidad",
+                question: "La ficha modelo o plantilla general de «Alumno» en el sistema informático, ¿qué es?",
+                answer: "CLASE",
+                explanation: "¡Exacto! La plantilla genérica «Alumno» que define qué datos tendrán los estudiantes es una CLASE."
+            },
+            {
+                id: 14,
+                emoji: "👩‍🎓",
+                category: "Universidad",
+                question: "«Laura Gómez, la alumna con expediente Nº 2084 sentada en primera fila», ¿qué es?",
+                answer: "OBJETO",
+                explanation: "¡Así es! Laura Gómez es una estudiante concreta y real: un OBJETO de la clase Alumno."
+            },
+            {
+                id: 15,
+                emoji: "📝💯",
+                category: "Universidad",
+                question: "«La nota media, la edad y el DNI de un estudiante», ¿qué son?",
+                answer: "ATRIBUTO",
+                explanation: "¡Perfecto! El DNI, la edad y la nota media son datos guardados en la ficha del alumno: ATRIBUTOS."
+            },
+            {
+                id: 16,
+                emoji: "📚✍️",
+                category: "Universidad",
+                question: "La acción de «entregarExamen()» o «matricularseEnJava()» que realiza un alumno, ¿qué es?",
+                answer: "METODO",
+                explanation: "¡Genial! Entregar un examen o matricularse son acciones/comportamientos: son MÉTODOS."
+            },
+
+            // --- Bloque Videojuegos y Banca ---
+            {
+                id: 17,
+                emoji: "❤️⚔️",
+                category: "Videojuegos RPG",
+                question: "«Los puntos de vida (HP) y las monedas de oro que tiene un héroe», ¿qué son?",
+                answer: "ATRIBUTO",
+                explanation: "¡Eso es! La vida actual o las monedas son variables que guardan datos del personaje: ATRIBUTOS."
+            },
+            {
+                id: 18,
+                emoji: "🗡️🛡️",
+                category: "Videojuegos RPG",
+                question: "La habilidad de «lanzarHechizo()» o «saltarObstaculo()» de un personaje, ¿qué es?",
+                answer: "METODO",
+                explanation: "¡Correcto! Lanzar un hechizo o saltar son acciones que ejecuta el personaje cuando pulsas un botón: MÉTODOS."
+            },
+            {
+                id: 19,
+                emoji: "💳",
+                category: "Banca",
+                question: "«La cuenta corriente ES91-2100-0418 perteneciente a Carlos Pérez», ¿qué es?",
+                answer: "OBJETO",
+                explanation: "¡Muy bien! Esa cuenta específica con número de IBAN y dueño propio es un OBJETO concreto."
+            },
+            {
+                id: 20,
+                emoji: "💶📤",
+                category: "Banca",
+                question: "La operación de «retirarDineroEnCajero()» o «transferirEuros()», ¿qué es?",
+                answer: "METODO",
+                explanation: "¡Exacto! Retirar dinero o hacer una transferencia son operaciones/acciones de la cuenta: son MÉTODOS."
+            },
+            {
+                id: 21,
+                emoji: "🍪🛠️",
+                category: "Cocina y Moldes",
+                question: "«El molde metálico con forma de estrella para cortar masa de galletas», ¿a qué equivale?",
+                answer: "CLASE",
+                explanation: "¡La analogía más famosa de POO! El molde metálico define la forma de todas las galletas: es la CLASE."
+            }
+        ];
+
+        /* =========================================================================
+           2. BANCO DE RETOS DE CÓDIGO JAVA (FASE 2 — MARCAR LOS 4 CONCEPTOS)
+           -------------------------------------------------------------------------
+           En cada reto se muestra un archivo Java real con tokens interactivos.
+           El jugador debe tocar y marcar en orden los 4 conceptos:
+             1º La CLASE       (después de public class)
+             2º El ATRIBUTO    (la variable de estado dentro de la clase)
+             3º El MÉTODO      (la acción definida con paréntesis () en la clase)
+             4º El OBJETO      (la variable instancia creada con new)
+           ========================================================================= */
+        const JAVA_CODE_CHALLENGES = [
+            {
+                id: 1,
+                fileName: "Perro.java",
+                explanation: "¡Dominado! 'Perro' es la CLASE, 'color' es el ATRIBUTO, 'ladrar' es el MÉTODO (acción con paréntesis) y 'miPerroToby' es el OBJETO creado con new.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Perro</span> {`,
+                    `    <span class="cm">// 1. Característica y 2. Acción</span>`,
+                    `    <span class="code-token" data-role="DISTRACTOR" data-why="'String' es el tipo de dato para texto, no el nombre del atributo.">String</span> <span class="code-token" data-role="ATRIBUTO">color</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">ladrar</span>() {`,
+                    `        System.out.println(<span class="code-token" data-role="DISTRACTOR" data-why="'\"¡Guau!\"' es solo un texto literal que se imprime por pantalla.">\"¡Guau!\"</span>);`,
+                    `    }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Perro <span class="code-token" data-role="OBJETO">miPerroToby</span> = <span class="kw">new</span> Perro();`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 2,
+                fileName: "Coche.java",
+                explanation: "'Coche' es la CLASE, 'velocidadMaxima' es el ATRIBUTO, 'acelerar' es el MÉTODO y 'seatIbiza' es el OBJETO instanciado.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Coche</span> {`,
+                    `    <span class="code-token" data-role="DISTRACTOR" data-why="'int' indica que el dato es un número entero, pero no es el nombre del atributo.">int</span> <span class="code-token" data-role="ATRIBUTO">velocidadMaxima</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">acelerar</span>() {`,
+                    `        velocidadMaxima = <span class="code-token" data-role="DISTRACTOR" data-why="'120' es un número literal, no una clase, atributo, método ni objeto.">120</span>;`,
+                    `    }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Coche <span class="code-token" data-role="OBJETO">seatIbiza</span> = <span class="kw">new</span> Coche();`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 3,
+                fileName: "Smartphone.java",
+                explanation: "'Smartphone' es la CLASE molde, 'bateriaPorcentaje' es el ATRIBUTO, 'llamarPorTelefono' es el MÉTODO y 'movilDeAna' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Smartphone</span> {`,
+                    `    <span class="kw">private</span> int <span class="code-token" data-role="ATRIBUTO">bateriaPorcentaje</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">llamarPorTelefono</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Smartphone <span class="code-token" data-role="OBJETO">movilDeAna</span> = <span class="kw">new</span> Smartphone();`,
+                    `        movilDeAna.bateriaPorcentaje = <span class="code-token" data-role="DISTRACTOR" data-why="'95' es solo el valor numérico asignado a la batería.">95</span>;`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 4,
+                fileName: "Alumno.java",
+                explanation: "'Alumno' define la CLASE, 'notaMedia' es el ATRIBUTO decimal, 'entregarExamen' es el MÉTODO y 'alumnoPedro' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Alumno</span> {`,
+                    `    <span class="code-token" data-role="DISTRACTOR" data-why="'double' es el tipo de dato para decimales, no el nombre del atributo.">double</span> <span class="code-token" data-role="ATRIBUTO">notaMedia</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">entregarExamen</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Alumno <span class="code-token" data-role="OBJETO">alumnoPedro</span> = <span class="kw">new</span> Alumno();`,
+                    `        alumnoPedro.notaMedia = <span class="code-token" data-role="DISTRACTOR" data-why="'8.75' es el número decimal asignado, no el nombre del atributo.">8.75</span>;`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 5,
+                fileName: "CuentaBancaria.java",
+                explanation: "'CuentaBancaria' es la CLASE, 'saldoActual' es el ATRIBUTO, 'ingresarDinero' es el MÉTODO y 'cuentaNomina' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">CuentaBancaria</span> {`,
+                    `    <span class="kw">private</span> <span class="code-token" data-role="DISTRACTOR" data-why="'double' es el tipo numérico, el nombre del atributo está a su derecha.">double</span> <span class="code-token" data-role="ATRIBUTO">saldoActual</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">ingresarDinero</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        CuentaBancaria <span class="code-token" data-role="OBJETO">cuentaNomina</span> = <span class="kw">new</span> CuentaBancaria();`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 6,
+                fileName: "PersonajeRPG.java",
+                explanation: "'PersonajeRPG' es la CLASE, 'puntosDeVida' es el ATRIBUTO, 'lanzarHechizo' es el MÉTODO y 'heroeAragorn' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">PersonajeRPG</span> {`,
+                    `    int <span class="code-token" data-role="ATRIBUTO">puntosDeVida</span> = <span class="code-token" data-role="DISTRACTOR" data-why="'100' es el valor inicial, no el identificador del atributo.">100</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">lanzarHechizo</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        PersonajeRPG <span class="code-token" data-role="OBJETO">heroeAragorn</span> = <span class="kw">new</span> PersonajeRPG();`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 7,
+                fileName: "Libro.java",
+                explanation: "'Libro' es la CLASE, 'numeroPaginas' es el ATRIBUTO, 'abrirCapitulo' es el MÉTODO y 'libroQuijote' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Libro</span> {`,
+                    `    <span class="code-token" data-role="DISTRACTOR" data-why="'int' es el tipo de dato entero, no el atributo.">int</span> <span class="code-token" data-role="ATRIBUTO">numeroPaginas</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">abrirCapitulo</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Libro <span class="code-token" data-role="OBJETO">libroQuijote</span> = <span class="kw">new</span> Libro();`,
+                    `    }`,
+                    `}`
+                ]
+            },
+            {
+                id: 8,
+                fileName: "Cafetera.java",
+                explanation: "'Cafetera' es la CLASE, 'temperaturaAgua' es el ATRIBUTO, 'prepararExpreso' es el MÉTODO y 'miCafeteraCocina' es el OBJETO.",
+                lines: [
+                    `<span class="kw">public class</span> <span class="code-token" data-role="CLASE">Cafetera</span> {`,
+                    `    int <span class="code-token" data-role="ATRIBUTO">temperaturaAgua</span> = <span class="code-token" data-role="DISTRACTOR" data-why="'90' son los grados centígrados iniciales (un literal numérico).">90</span>;`,
+                    ``,
+                    `    <span class="kw">public void</span> <span class="code-token" data-role="METODO">prepararExpreso</span>() { }`,
+                    ``,
+                    `    <span class="kw">public static void</span> main(String[] args) {`,
+                    `        Cafetera <span class="code-token" data-role="OBJETO">miCafeteraCocina</span> = <span class="kw">new</span> Cafetera();`,
+                    `    }`,
+                    `}`
+                ]
+            }
+        ];
+
+        /* =========================================================================
+           3. VARIABLES DE ESTADO DEL JUEGO
+           ========================================================================= */
+        let gameState = {
+            mode: "FULL",            // "FULL" (Fase 1 + 2), "PHASE1_ONLY", "PHASE2_ONLY"
+            score: 0,                // Puntuación total acumulada
+            streak: 0,               // Racha actual de aciertos seguidos
+            bestStreak: 0,           // Mejor racha de toda la sesión
+            firstTryHits: 0,         // Aciertos limpios a la primera
+            totalItemsEvaluated: 0,  // Total de preguntas/retos evaluados
+
+            // Cola aleatoria sin repetición para la Fase 1 (21 preguntas)
+            phase1Deck: [],
+            phase1Index: 0,
+            phase1Answered: false,
+
+            // Cola aleatoria sin repetición para la Fase 2 (Retos de código Java)
+            phase2Deck: [],
+            phase2Index: 0,
+            // Orden en el que el jugador marca los 4 conceptos dentro del código Java
+            phase2SubStep: "CLASE",  // "CLASE" -> "ATRIBUTO" -> "METODO" -> "OBJETO" -> "DONE"
+            phase2CurrentMistake: false
+        };
+
+        /* =========================================================================
+           4. SISTEMA DE SONIDO SINTETIZADO (WEB AUDIO API — SIN ARCHIVOS EXTERNOS)
+           ========================================================================= */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        /**
+         * Inicializa el contexto de audio del navegador tras el primer toque del usuario.
+         */
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === "suspended") {
+                audioCtx.resume();
+            }
+        }
+
+        /**
+         * Reproduce efectos de sonido retro/arcade según la acción del jugador.
+         * @param {string} type - 'hit' (acierto), 'error' (fallo), 'levelup' (fase completada)
+         */
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === "hit") {
+                    // Acorde ascendente alegre
+                    osc.type = "triangle";
+                    osc.frequency.setValueAtTime(523.25, now);       // Do5
+                    osc.frequency.setValueAtTime(659.25, now + 0.07);// Mi5
+                    osc.frequency.setValueAtTime(783.99, now + 0.14);// Sol5
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === "error") {
+                    // Tono grave de aviso
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(190, now);
+                    osc.frequency.linearRampToValueAtTime(120, now + 0.22);
+                    gain.gain.setValueAtTime(0.16, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                    osc.start(now);
+                    osc.stop(now + 0.24);
+                } else if (type === "levelup") {
+                    // Fanfarria de victoria
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(554.37, now + 0.09);
+                    osc.frequency.setValueAtTime(659.25, now + 0.18);
+                    osc.frequency.setValueAtTime(880, now + 0.27);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                }
+            } catch (e) {
+                // Si el navegador bloquea el audio, continuamos silenciosamente
+            }
+        }
+
+        /**
+         * Activa o desactiva el sonido cuando el usuario pulsa el icono del altavoz.
+         */
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById("soundToggleBtn");
+            btn.textContent = soundEnabled ? "🔊" : "🔇";
+        }
+
+        /* =========================================================================
+           5. CONTROL DEL TAMAÑO DE LA FUENTE (ACCESIBILIDAD MÓVIL)
+           ========================================================================= */
+        /**
+         * Cambia el tamaño base de fuente de toda la aplicación y lo guarda en localStorage.
+         * @param {number} pxSize - Tamaño en píxeles (14, 16, 18.5, 21)
+         * @param {HTMLElement} btnElement - Botón pulsado para marcarlo como activo
+         */
+        function setFontSize(pxSize, btnElement) {
+            document.documentElement.style.setProperty("--base-font-size", pxSize + "px");
+            document.querySelectorAll(".font-btn").forEach(b => b.classList.remove("active"));
+            if (btnElement) {
+                btnElement.classList.add("active");
+            }
+            try {
+                localStorage.setItem("poo_quest_font_size", pxSize);
+            } catch (e) {}
+        }
+
+        // Al cargar la página, restauramos el tamaño de letra preferido si el usuario ya lo eligió antes
+        window.addEventListener("DOMContentLoaded", () => {
+            try {
+                const savedSize = localStorage.getItem("poo_quest_font_size");
+                if (savedSize) {
+                    document.documentElement.style.setProperty("--base-font-size", savedSize + "px");
+                    const buttons = document.querySelectorAll(".font-btn");
+                    const map = { "14": 0, "16": 1, "18.5": 2, "21": 3 };
+                    if (map[savedSize] !== undefined) {
+                        buttons.forEach(b => b.classList.remove("active"));
+                        buttons[map[savedSize]].classList.add("active");
+                    }
+                }
+            } catch (e) {}
+        });
+
+        /* =========================================================================
+           6. UTILIDADES DE BARAJADO ALEATORIO SIN REPETICIÓN (FISHER-YATES)
+           ========================================================================= */
+        /**
+         * Devuelve una copia desordenada aleatoriamente de un array usando el algoritmo
+         * de Fisher-Yates para garantizar que nunca se repitan preguntas y el orden sea 100% azaroso.
+         */
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        /**
+         * Cambia la pantalla activa de la aplicación y hace scroll suave hacia arriba.
+         */
+        function showScreen(screenId) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(screenId).classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        /**
+         * Actualiza los contadores del marcador superior (HUD).
+         */
+        function updateHUD(phaseLabel, progressFraction) {
+            document.getElementById("hudScore").textContent = gameState.score;
+            document.getElementById("hudStreak").textContent = "🔥 " + gameState.streak;
+            document.getElementById("hudHits").textContent = gameState.firstTryHits;
+            document.getElementById("hudPhase").textContent = phaseLabel;
+
+            const fill = document.getElementById("progressFill");
+            fill.style.width = Math.min(100, Math.max(0, progressFraction * 100)) + "%";
+        }
+
+        /**
+         * Vuelve a la portada inicial ocultando el marcador de partida.
+         */
+        function goHome() {
+            document.getElementById("hudBar").classList.remove("visible");
+            document.getElementById("progressContainer").classList.remove("visible");
+            showScreen("screenHome");
+        }
+
+        /* =========================================================================
+           7. ARRANQUE DE LOS MODOS DE JUEGO
+           ========================================================================= */
+        function resetStats(mode) {
+            gameState.mode = mode;
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.bestStreak = 0;
+            gameState.firstTryHits = 0;
+            gameState.totalItemsEvaluated = 0;
+
+            // Barajamos las 21 preguntas de la realidad y los 8 códigos Java sin repetición
+            gameState.phase1Deck = shuffleArray(REAL_WORLD_QUESTIONS);
+            gameState.phase1Index = 0;
+
+            gameState.phase2Deck = shuffleArray(JAVA_CODE_CHALLENGES);
+            gameState.phase2Index = 0;
+
+            document.getElementById("hudBar").classList.add("visible");
+            document.getElementById("progressContainer").classList.add("visible");
+        }
+
+        /**
+         * Inicia la experiencia completa: primero las 21 preguntas de la realidad y luego el código Java.
+         */
+        function startFullAdventure() {
+            resetStats("FULL");
+            renderPhase1Question();
+            showScreen("screenPhase1");
+        }
+
+        /**
+         * Inicia únicamente la Parte 1 (las 21 preguntas de comparaciones con la realidad).
+         */
+        function startPhase1Only() {
+            resetStats("PHASE1_ONLY");
+            renderPhase1Question();
+            showScreen("screenPhase1");
+        }
+
+        /**
+         * Inicia únicamente la Parte 2 (marcar Clase, Atributo, Método y Objeto en código Java).
+         */
+        function startPhase2Only() {
+            resetStats("PHASE2_ONLY");
+            renderPhase2Challenge();
+            showScreen("screenPhase2");
+        }
+
+        /* =========================================================================
+           8. LÓGICA DE LA FASE 1: 21 PREGUNTAS DE LA VIDA REAL (4 OPCIONES)
+           ========================================================================= */
+        /**
+         * Muestra en pantalla la pregunta actual de la Fase 1.
+         */
+        function renderPhase1Question() {
+            gameState.phase1Answered = false;
+            const total = gameState.phase1Deck.length; // 21 preguntas
+            const currentObj = gameState.phase1Deck[gameState.phase1Index];
+
+            // Actualizamos textos e indicadores de progreso
+            document.getElementById("q1ProgressText").textContent =
+                `Pregunta ${gameState.phase1Index + 1} de ${total}`;
+            document.getElementById("q1Emoji").textContent = currentObj.emoji;
+            document.getElementById("q1Category").textContent = "Contexto: " + currentObj.category;
+            document.getElementById("q1Text").textContent = currentObj.question;
+
+            // Reactivamos los 4 botones de respuesta
+            const buttons = ["btnOptClase", "btnOptObjeto", "btnOptAtributo", "btnOptMetodo"];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.disabled = false;
+                btn.classList.remove("correct", "wrong");
+            });
+
+            // Ocultamos el panel de explicación hasta que conteste
+            const fb = document.getElementById("q1Feedback");
+            fb.className = "feedback-box";
+
+            updateHUD("Parte 1", gameState.phase1Index / total);
+        }
+
+        /**
+         * Evalúa la respuesta elegida por el jugador en la Fase 1 ('CLASE', 'OBJETO', 'ATRIBUTO' o 'METODO').
+         */
+        function submitPhase1Answer(selectedType) {
+            if (gameState.phase1Answered) return;
+            gameState.phase1Answered = true;
+
+            const currentObj = gameState.phase1Deck[gameState.phase1Index];
+            const isCorrect = (selectedType === currentObj.answer);
+
+            const mapBtn = {
+                "CLASE": document.getElementById("btnOptClase"),
+                "OBJETO": document.getElementById("btnOptObjeto"),
+                "ATRIBUTO": document.getElementById("btnOptAtributo"),
+                "METODO": document.getElementById("btnOptMetodo")
+            };
+
+            const readableName = {
+                "CLASE": "una CLASE",
+                "OBJETO": "un OBJETO",
+                "ATRIBUTO": "un ATRIBUTO",
+                "METODO": "un MÉTODO"
+            };
+
+            // Bloqueamos los botones y resaltamos cuál era la respuesta correcta
+            Object.values(mapBtn).forEach(btn => btn.disabled = true);
+            mapBtn[currentObj.answer].classList.add("correct");
+
+            const fb = document.getElementById("q1Feedback");
+            const fbTitle = document.getElementById("q1FeedbackTitle");
+            const fbText = document.getElementById("q1FeedbackText");
+
+            gameState.totalItemsEvaluated++;
+
+            if (isCorrect) {
+                playSound("hit");
+                gameState.streak++;
+                if (gameState.streak > gameState.bestStreak) {
+                    gameState.bestStreak = gameState.streak;
+                }
+                gameState.firstTryHits++;
+
+                // Bonus por racha para hacer el juego más emocionante
+                const bonus = Math.min(50, (gameState.streak - 1) * 10);
+                const pointsEarned = 100 + bonus;
+                gameState.score += pointsEarned;
+
+                fb.className = "feedback-box visible ok";
+                fbTitle.innerHTML = `✅ ¡Correcto! (+${pointsEarned} pts)`;
+                fbText.textContent = currentObj.explanation;
+            } else {
+                playSound("error");
+                gameState.streak = 0;
+                mapBtn[selectedType].classList.add("wrong");
+
+                fb.className = "feedback-box visible fail";
+                fbTitle.innerHTML = `❌ ¡Casi! Era ${readableName[currentObj.answer]}`;
+                fbText.textContent = currentObj.explanation;
+            }
+
+            updateHUD("Parte 1", (gameState.phase1Index + 1) / gameState.phase1Deck.length);
+        }
+
+        /**
+         * Avanza a la siguiente pregunta de las 21 o pasa a la Fase 2 / Resultados.
+         */
+        function nextPhase1Question() {
+            gameState.phase1Index++;
+            if (gameState.phase1Index < gameState.phase1Deck.length) {
+                renderPhase1Question();
+            } else {
+                // Ha terminado las 21 preguntas de la realidad
+                playSound("levelup");
+                if (gameState.mode === "FULL") {
+                    // Mostramos pantalla de felicitación antes de entrar al código Java
+                    document.getElementById("transScore").textContent = gameState.score;
+                    const acc = Math.round((gameState.firstTryHits / gameState.totalItemsEvaluated) * 100);
+                    document.getElementById("transAccuracy").textContent = acc + "%";
+                    showScreen("screenTransition");
+                } else {
+                    showFinalResults();
+                }
+            }
+        }
+
+        /**
+         * Pasa de la pantalla de transición a la Fase 2 (Código Java).
+         */
+        function beginPhase2FromTransition() {
+            renderPhase2Challenge();
+            showScreen("screenPhase2");
+        }
+
+        /* =========================================================================
+           9. LÓGICA DE LA FASE 2: MARCAR CLASE, ATRIBUTO, MÉTODO Y OBJETO EN JAVA
+           ========================================================================= */
+        /**
+         * Renderiza el reto actual de código Java y prepara los tokens interactivos.
+         */
+        function renderPhase2Challenge() {
+            const total = gameState.phase2Deck.length;
+            const challenge = gameState.phase2Deck[gameState.phase2Index];
+
+            gameState.phase2SubStep = "CLASE";
+            gameState.phase2CurrentMistake = false;
+
+            document.getElementById("q2ProgressText").textContent =
+                `Código ${gameState.phase2Index + 1} de ${total}`;
+            document.getElementById("codeFileName").textContent = challenge.fileName;
+
+            // Inyectamos las líneas del código Java en el visor oscuro
+            const container = document.getElementById("codeContainer");
+            container.innerHTML = challenge.lines.join("\n");
+
+            // Asociamos el evento de clic/toque a cada palabra interactiva del código
+            const tokens = container.querySelectorAll(".code-token");
+            tokens.forEach(token => {
+                token.addEventListener("click", () => handleCodeTokenTap(token));
+            });
+
+            // Ocultamos el panel de feedback inferior hasta que marque los 4 elementos
+            document.getElementById("q2Feedback").className = "feedback-box";
+
+            updatePhase2MissionBanner();
+            updateHUD("Parte 2", gameState.phase2Index / total);
+        }
+
+        /**
+         * Actualiza el cartel superior que le dice al jugador qué debe tocar ahora mismo
+         * (1º CLASE -> 2º ATRIBUTO -> 3º MÉTODO -> 4º OBJETO).
+         */
+        function updatePhase2MissionBanner() {
+            const pillClase = document.getElementById("stepPillClase");
+            const pillAtributo = document.getElementById("stepPillAtributo");
+            const pillMetodo = document.getElementById("stepPillMetodo");
+            const pillObjeto = document.getElementById("stepPillObjeto");
+            const prompt = document.getElementById("missionPrompt");
+
+            pillClase.className = "step-pill";
+            pillAtributo.className = "step-pill";
+            pillMetodo.className = "step-pill";
+            pillObjeto.className = "step-pill";
+
+            if (gameState.phase2SubStep === "CLASE") {
+                pillClase.classList.add("active-clase");
+                prompt.innerHTML = `📐 Paso 1/4: Toca en el código el nombre de la <span style="color:var(--color-clase)">CLASE</span>`;
+            } else if (gameState.phase2SubStep === "ATRIBUTO") {
+                pillClase.classList.add("completed");
+                pillAtributo.classList.add("active-atributo");
+                prompt.innerHTML = `🏷️ Paso 2/4: Toca el nombre del <span style="color:var(--color-atributo)">ATRIBUTO</span> (dato/característica)`;
+            } else if (gameState.phase2SubStep === "METODO") {
+                pillClase.classList.add("completed");
+                pillAtributo.classList.add("completed");
+                pillMetodo.classList.add("active-metodo");
+                prompt.innerHTML = `⚡ Paso 3/4: Toca el nombre del <span style="color:var(--color-metodo)">MÉTODO</span> (acción con <code>()</code>)`;
+            } else if (gameState.phase2SubStep === "OBJETO") {
+                pillClase.classList.add("completed");
+                pillAtributo.classList.add("completed");
+                pillMetodo.classList.add("completed");
+                pillObjeto.classList.add("active-objeto");
+                prompt.innerHTML = `🧸 Paso 4/4: Por último, toca el nombre del <span style="color:var(--color-objeto)">OBJETO</span> (creado con <code>new</code>)`;
+            } else {
+                pillClase.classList.add("completed");
+                pillAtributo.classList.add("completed");
+                pillMetodo.classList.add("completed");
+                pillObjeto.classList.add("completed");
+                prompt.innerHTML = `✨ ¡Código Java completado al 100%!`;
+            }
+        }
+
+        /**
+         * Gestiona el toque del usuario sobre una palabra del código Java.
+         */
+        function handleCodeTokenTap(tokenElement) {
+            if (gameState.phase2SubStep === "DONE") return;
+
+            // Si ya fue marcado correctamente antes, lo ignoramos
+            if (
+                tokenElement.classList.contains("marked-clase") ||
+                tokenElement.classList.contains("marked-atributo") ||
+                tokenElement.classList.contains("marked-metodo") ||
+                tokenElement.classList.contains("marked-objeto")
+            ) {
+                return;
+            }
+
+            const role = tokenElement.getAttribute("data-role");
+            const expectedRole = gameState.phase2SubStep;
+            const fb = document.getElementById("q2Feedback");
+            const fbTitle = document.getElementById("q2FeedbackTitle");
+            const fbText = document.getElementById("q2FeedbackText");
+            const nextBtn = document.getElementById("q2NextBtn");
+
+            const labelMap = {
+                "CLASE": "la CLASE",
+                "ATRIBUTO": "el ATRIBUTO",
+                "METODO": "el MÉTODO",
+                "OBJETO": "el OBJETO"
+            };
+
+            if (role === expectedRole) {
+                // ¡Ha tocado el elemento correcto del código!
+                playSound("hit");
+                gameState.score += 50;
+
+                if (expectedRole === "CLASE") {
+                    tokenElement.classList.add("marked-clase");
+                    tokenElement.innerHTML += `<span class="token-badge" style="background:var(--color-clase);color:#000">CLASE</span>`;
+                    gameState.phase2SubStep = "ATRIBUTO";
+                    fb.className = "feedback-box";
+                } else if (expectedRole === "ATRIBUTO") {
+                    tokenElement.classList.add("marked-atributo");
+                    tokenElement.innerHTML += `<span class="token-badge" style="background:var(--color-atributo);color:#000">ATRIBUTO</span>`;
+                    gameState.phase2SubStep = "METODO";
+                    fb.className = "feedback-box";
+                } else if (expectedRole === "METODO") {
+                    tokenElement.classList.add("marked-metodo");
+                    tokenElement.innerHTML += `<span class="token-badge" style="background:var(--color-metodo);color:#000">MÉTODO</span>`;
+                    gameState.phase2SubStep = "OBJETO";
+                    fb.className = "feedback-box";
+                } else if (expectedRole === "OBJETO") {
+                    tokenElement.classList.add("marked-objeto");
+                    tokenElement.innerHTML += `<span class="token-badge" style="background:var(--color-objeto);color:#fff">OBJETO</span>`;
+                    gameState.phase2SubStep = "DONE";
+
+                    // Ha completado los 4 elementos de este fragmento Java
+                    gameState.totalItemsEvaluated++;
+                    if (!gameState.phase2CurrentMistake) {
+                        gameState.firstTryHits++;
+                        gameState.streak++;
+                        if (gameState.streak > gameState.bestStreak) {
+                            gameState.bestStreak = gameState.streak;
+                        }
+                        gameState.score += 100; // Bonus por completar el código sin fallos
+                    }
+
+                    const challenge = gameState.phase2Deck[gameState.phase2Index];
+                    fb.className = "feedback-box visible ok";
+                    fbTitle.innerHTML = "✅ ¡Excelente! Has identificado los 4 elementos en Java";
+                    fbText.textContent = challenge.explanation;
+                    nextBtn.style.display = "flex";
+                }
+
+                updatePhase2MissionBanner();
+                updateHUD("Parte 2", (gameState.phase2Index + (gameState.phase2SubStep === "DONE" ? 1 : 0.5)) / gameState.phase2Deck.length);
+            } else {
+                // Ha tocado un token equivocado: mostramos pista inmediata sin bloquear el reto
+                playSound("error");
+                gameState.phase2CurrentMistake = true;
+                gameState.streak = 0;
+
+                tokenElement.classList.remove("wrong-flash");
+                void tokenElement.offsetWidth; // Reflow para reiniciar animación
+                tokenElement.classList.add("wrong-flash");
+
+                let reason = tokenElement.getAttribute("data-why");
+                if (!reason) {
+                    if (role === "CLASE") reason = `Ese identificador es la CLASE, pero en este paso debes tocar ${labelMap[expectedRole]}.`;
+                    else if (role === "ATRIBUTO") reason = `Ese identificador es el ATRIBUTO (característica), pero ahora debes tocar ${labelMap[expectedRole]}.`;
+                    else if (role === "METODO") reason = `Ese identificador es el MÉTODO (acción con paréntesis ()), pero ahora debes tocar ${labelMap[expectedRole]}.`;
+                    else if (role === "OBJETO") reason = `Ese identificador es el OBJETO creado con 'new', pero antes debes tocar ${labelMap[expectedRole]}.`;
+                }
+
+                fb.className = "feedback-box visible fail";
+                fbTitle.innerHTML = `⚠️ ¡Atención! Ahora buscamos ${labelMap[expectedRole]}`;
+                fbText.textContent = reason;
+                nextBtn.style.display = "none"; // Aún no ha terminado los 4 pasos de este código
+
+                updateHUD("Parte 2", gameState.phase2Index / gameState.phase2Deck.length);
+            }
+        }
+
+        /**
+         * Avanza al siguiente ejercicio de código Java o muestra la pantalla final de trofeos.
+         */
+        function nextPhase2Challenge() {
+            gameState.phase2Index++;
+            if (gameState.phase2Index < gameState.phase2Deck.length) {
+                renderPhase2Challenge();
+            } else {
+                playSound("levelup");
+                showFinalResults();
+            }
+        }
+
+        /* =========================================================================
+           10. PANTALLA FINAL DE PUNTUACIÓN Y RANGOS
+           ========================================================================= */
+        function showFinalResults() {
+            const total = Math.max(1, gameState.totalItemsEvaluated);
+            const percent = Math.round((gameState.firstTryHits / total) * 100);
+
+            document.getElementById("finalScore").textContent = gameState.score;
+            document.getElementById("finalBestStreak").textContent = "🔥 " + gameState.bestStreak;
+            document.getElementById("finalHits").textContent = `${gameState.firstTryHits} / ${total}`;
+            document.getElementById("finalPercent").textContent = percent + "%";
+
+            const medalEl = document.getElementById("finalMedal");
+            const titleEl = document.getElementById("finalRankTitle");
+            const descEl = document.getElementById("finalRankDesc");
+
+            if (percent >= 90) {
+                medalEl.textContent = "👑";
+                titleEl.textContent = "¡Arquitecto Supremo de Java!";
+                descEl.textContent = "Dominas a la perfección qué es una Clase, un Objeto, un Atributo y un Método tanto en la vida real como en código Java.";
+            } else if (percent >= 70) {
+                medalEl.textContent = "🥇";
+                titleEl.textContent = "¡Programador Senior POO!";
+                descEl.textContent = "Muy buen trabajo. Tienes los 4 conceptos súper claros y apenas dudas ante el código.";
+            } else if (percent >= 50) {
+                medalEl.textContent = "🥈";
+                titleEl.textContent = "¡Programador Junior en Ascenso!";
+                descEl.textContent = "Vas por buen camino. Echa otra partida rápida para afianzar el 100% de los conceptos.";
+            } else {
+                medalEl.textContent = "🥉";
+                titleEl.textContent = "¡Aprendiz de Java!";
+                descEl.textContent = "Recuerda la regla de oro: Clase = Molde, Objeto = Individuo real, Atributo = Característica, Método = Acción ().";
+            }
+
+            updateHUD("Final", 1);
+            showScreen("screenResults");
+        }
+    </script>
+</body>
+</html>
